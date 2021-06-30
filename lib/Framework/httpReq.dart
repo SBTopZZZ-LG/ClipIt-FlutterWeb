@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:app/Framework/WebSchemas/Session.dart';
 import 'package:http/http.dart' as http;
 
-const String _BASE_URL = "https://agile-wave-85046.herokuapp.com";
+const String _BASE_URL =
+    //"http://localhost:3000";
+    "https://agile-wave-85046.herokuapp.com";
 
 Future<bool> createSession(String sessionName) async {
   final response =
@@ -15,6 +17,8 @@ Future<bool> createSession(String sessionName) async {
 Future<Session?> getSession(String sessionName) async {
   final response =
       await http.get(Uri.parse("$_BASE_URL/session?name=$sessionName"));
+
+  print(response.body);
 
   if (response.statusCode == 200) {
     Map<String, dynamic> responseBody = jsonDecode(response.body);

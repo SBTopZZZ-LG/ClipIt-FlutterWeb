@@ -1,39 +1,127 @@
 import 'dart:math';
-
-import 'package:app/Framework/currentSession.dart';
-import 'package:app/Framework/httpReq.dart';
 import 'package:flutter/material.dart';
-
-import 'package:app/Prefabs/appBar.dart';
 import 'package:flutter/services.dart';
 
+import '../Framework/currentSession.dart';
+import '../Framework/httpReq.dart';
+import '../Prefabs/appBar.dart';
+
 class SessionPage extends StatefulWidget {
+  static const String route = "/session";
+
+  final String sessionName;
+
+  SessionPage(this.sessionName);
+
+  static bool validate(String sessionName) {
+    const String allowedChars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+    if (sessionName.length >= 6) {
+      for (String char in sessionName.characters.toList()) {
+        if (!allowedChars.contains(char)) return false;
+      }
+
+      return true;
+    }
+    return false;
+  }
+
   @override
-  _SessionPageState createState() => _SessionPageState();
+  _SessionPageState createState() => _SessionPageState(sessionName);
 }
 
 class _SessionPageState extends State<SessionPage> {
+  final String sessionName;
+  bool _isLoading = true;
+
   bool stopRefreshing = false;
   int currentRefreshCode = -1;
+
+  _SessionPageState(this.sessionName) {
+    _createLoadSession();
+  }
 
   TextEditingController contentController = TextEditingController(
       text: currentSession != null ? currentSession!.content : "");
 
-  void _loadSession() {
-    getSession(currentSessionName!).then((value) {
-      if (value != null) {
-        currentSession = value;
-        contentController.text = currentSession!.content;
-
-        currentRefreshCode = Random().nextInt(1000);
-        _checkLoadSession(currentRefreshCode);
+  void _createLoadSession() async {
+    createSession(sessionName).then((value) {
+      if (value) {
+        _loadSession();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-            "Failed to load content",
-          ),
-        ));
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (ctx) => AlertDialog(
+                  title: Text("Error"),
+                  content: Text(
+                      "There was a problem trying to create the session. Please try again later, or check your session."),
+                  actions: [
+                    OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Dismiss",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ))
+                  ],
+                ));
       }
+    });
+  }
+
+  void _loadSession() {
+    if (sessionName == "<invalid>") {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (ctx) => AlertDialog(
+                title: Text("Error"),
+                content: Text(
+                    "There was a problem trying to access the session. Please try again later, or check your session."),
+                actions: [
+                  OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Dismiss",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ))
+                ],
+              ));
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      getSession(sessionName).then((value) {
+        if (value != null) {
+          currentSession = value;
+
+          setState(() {
+            _isLoading = false;
+
+            contentController.text = currentSession!.content;
+          });
+
+          currentRefreshCode = Random().nextInt(1000);
+          _checkLoadSession(currentRefreshCode);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              "Failed to load content",
+            ),
+          ));
+        }
+      });
     });
   }
 
@@ -101,8 +189,6 @@ class _SessionPageState extends State<SessionPage> {
 
   @override
   Widget build(BuildContext context) {
-    _loadSession();
-
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -122,7 +208,7 @@ class _SessionPageState extends State<SessionPage> {
                       width: 10,
                     ),
                     Text(
-                      currentSessionName!,
+                      sessionName,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -144,7 +230,7 @@ class _SessionPageState extends State<SessionPage> {
                                         child: OutlinedButton(
                                           onPressed: () {
                                             Clipboard.setData(ClipboardData(
-                                                text: currentSessionName));
+                                                text: sessionName));
 
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(SnackBar(
@@ -208,43 +294,35 @@ class _SessionPageState extends State<SessionPage> {
                 SizedBox(
                   height: 35,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 2,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  padding: const EdgeInsets.all(5),
-                  height: 300,
-                  child: TextField(
-                    controller: contentController,
-                    maxLength: 5000,
-                    maxLines: 1000,
-                    style: TextStyle(fontSize: 17),
-                  ),
-                ),
+                !_isLoading
+                    ? Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 2,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        padding: const EdgeInsets.all(5),
+                        height: 300,
+                        child: TextField(
+                          controller: contentController,
+                          maxLength: 5000,
+                          maxLines: 1000,
+                          style: TextStyle(fontSize: 17),
+                        ),
+                      )
+                    : Center(
+                        child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: CircularProgressIndicator(),
+                      )),
                 SizedBox(
                   height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    // OutlinedButton(
-                    //     onPressed: () {
-                    //       contentController.text = "";
-                    //     },
-                    //     child: Padding(
-                    //       padding: const EdgeInsets.all(10),
-                    //       child: Text(
-                    //         "Clear",
-                    //         style: TextStyle(
-                    //             fontSize: 17, color: Colors.deepOrange),
-                    //       ),
-                    //     )),
-                    // SizedBox(
-                    //   width: 10,
-                    // ),
                     OutlinedButton(
                         onPressed: () {
                           _loadSession();

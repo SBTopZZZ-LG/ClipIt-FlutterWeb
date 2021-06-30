@@ -13,11 +13,11 @@ PreferredSizeWidget getDefaultAppBar() {
           width: 10,
         ),
         Text(
-          "Ver. 1.0",
+          "2.0",
           style: TextStyle(
               fontSize: 19,
               fontWeight: FontWeight.w300,
-              color: Colors.grey.shade300),
+              color: Colors.white.withOpacity(0.5)),
         ),
         SizedBox(
           width: 20,
@@ -35,6 +35,7 @@ PreferredSizeWidget getDefaultAppBar() {
             ))
       ],
     ),
+    leading: null,
   );
 }
 
