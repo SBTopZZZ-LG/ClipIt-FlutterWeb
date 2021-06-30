@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-PreferredSizeWidget getDefaultAppBar() {
+PreferredSizeWidget getDefaultAppBar(BuildContext context) {
   return AppBar(
+    backgroundColor: Theme.of(context).backgroundColor,
     centerTitle: true,
     title: Row(
       mainAxisAlignment: MainAxisAlignment.center,

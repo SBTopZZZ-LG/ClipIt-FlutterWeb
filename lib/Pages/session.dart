@@ -168,7 +168,7 @@ class _SessionPageState extends State<SessionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getDefaultAppBar(),
+      appBar: getDefaultAppBar(context),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -191,21 +191,31 @@ class _SessionPageState extends State<SessionPage> {
                     width: 20,
                   ),
                   OutlinedButton(
+                      style: ButtonStyle(
+                          foregroundColor: MaterialStateColor.resolveWith(
+                              (states) => Theme.of(context).primaryColor)),
                       onPressed: () {
                         showDialog(
                             context: context,
                             builder: (ctx) => AlertDialog(
                                   title: Text("Share Link"),
                                   content: Text(
-                                      "You can invite other people to your session by sending them your session name."),
+                                      "You can invite other people to your session by sending them your session name, or alternatively sending the link."),
                                   actions: [
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8.0),
                                       child: OutlinedButton(
+                                        style: ButtonStyle(
+                                            foregroundColor:
+                                                MaterialStateColor.resolveWith(
+                                                    (states) =>
+                                                        Theme.of(context)
+                                                            .primaryColor)),
                                         onPressed: () {
-                                          Clipboard.setData(
-                                              ClipboardData(text: sessionName));
+                                          Clipboard.setData(ClipboardData(
+                                              text:
+                                                  "https://clip-it-web.herokuapp.com/#/$sessionName"));
 
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
@@ -235,16 +245,23 @@ class _SessionPageState extends State<SessionPage> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: OutlinedButton(
+                                        style: ButtonStyle(
+                                            foregroundColor:
+                                                MaterialStateColor.resolveWith(
+                                                    (states) =>
+                                                        Theme.of(context)
+                                                            .primaryColor)),
                                         onPressed: () {
                                           Navigator.pop(ctx);
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.all(10),
                                           child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               Text(
                                                 "Okay",
-                                                textAlign: TextAlign.center,
                                                 style: TextStyle(fontSize: 18),
                                               ),
                                             ],
@@ -296,9 +313,14 @@ class _SessionPageState extends State<SessionPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   OutlinedButton(
-                      onPressed: () {
-                        _loadSession();
-                      },
+                      style: ButtonStyle(
+                          foregroundColor: MaterialStateColor.resolveWith(
+                              (states) => Theme.of(context).primaryColor)),
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              _loadSession();
+                            },
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: Text(
@@ -311,28 +333,35 @@ class _SessionPageState extends State<SessionPage> {
                     width: 10,
                   ),
                   ElevatedButton(
-                      onPressed: () {
-                        currentSession!.content = contentController.text;
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateColor.resolveWith(
+                              (states) => Theme.of(context).primaryColor)),
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              currentSession!.content = contentController.text;
 
-                        updateSession(currentSession!).then((value) {
-                          if (value != null) {
-                            // Updated
-                            _loadSession();
+                              updateSession(currentSession!).then((value) {
+                                if (value != null) {
+                                  // Updated
+                                  _loadSession();
 
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                "You updated the content",
-                              ),
-                            ));
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                "Failed to update content",
-                              ),
-                            ));
-                          }
-                        });
-                      },
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text(
+                                      "You updated the content",
+                                    ),
+                                  ));
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text(
+                                      "Failed to update content",
+                                    ),
+                                  ));
+                                }
+                              });
+                            },
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: Text(

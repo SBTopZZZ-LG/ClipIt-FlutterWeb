@@ -6,6 +6,11 @@ void main() {
   FluroRouterClass.setupRouter();
 
   runApp(MaterialApp(
-    onGenerateRoute: FluroRouterClass.router.generator,
-  ));
+      color: Color.fromARGB(255, 186, 49, 39),
+      title: "ClipIt",
+      onGenerateRoute: FluroRouterClass.router.generator,
+      theme: ThemeData(
+          fontFamily: 'PTSans',
+          backgroundColor: Color.fromARGB(255, 235, 64, 52),
+          primaryColor: Color.fromARGB(255, 186, 49, 39))));
 }

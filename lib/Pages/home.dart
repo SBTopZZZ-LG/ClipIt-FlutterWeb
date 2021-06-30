@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getDefaultAppBar(),
+      appBar: getDefaultAppBar(context),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
                     hintText: "Session ID/Name",
                     errorText: SessionPage.validate(_sessionName)
                         ? null
-                        : "Session name must be >= 6 and <= 15 characters. Allowed characters are a-z, A-Z, 0-9, and URL symbols."),
+                        : "Session name must be >= 6 and <= 15 characters. Allowed characters are a-z, A-Z, 0-9, dashes(-) and underscores '_'."),
                 style: TextStyle(fontSize: 19),
                 keyboardType: TextInputType.name,
                 maxLength: 15,
@@ -53,21 +53,19 @@ class _HomePageState extends State<HomePage> {
                 height: 20,
               ),
               ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateColor.resolveWith(
+                        (states) => Theme.of(context).primaryColor)),
                 onPressed:
                     SessionPage.validate(_sessionName) ? _createSession : null,
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Text(
-                    "Create Session",
+                    "Create/Join Session",
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
               ),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                  "Session will not be created if a session with the specified name/id already exists"),
             ],
           ),
         ),
