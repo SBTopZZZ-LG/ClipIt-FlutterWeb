@@ -5,6 +5,7 @@ import 'package:app/Framework/httpReq.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/Prefabs/appBar.dart';
+import 'package:flutter/services.dart';
 
 class SessionPage extends StatefulWidget {
   @override
@@ -129,7 +130,72 @@ class _SessionPageState extends State<SessionPage> {
                       width: 20,
                     ),
                     OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                    title: Text("Share Link"),
+                                    content: Text(
+                                        "You can invite other people to your session by sending them your session name."),
+                                    actions: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: OutlinedButton(
+                                          onPressed: () {
+                                            Clipboard.setData(ClipboardData(
+                                                text: currentSessionName));
+
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: Text(
+                                                "Copied to Clipboard",
+                                              ),
+                                            ));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.copy),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                  "Copy session name",
+                                                  style:
+                                                      TextStyle(fontSize: 18),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: OutlinedButton(
+                                          onPressed: () {
+                                            Navigator.pop(ctx);
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "Okay",
+                                                  textAlign: TextAlign.center,
+                                                  style:
+                                                      TextStyle(fontSize: 18),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ));
+                        },
                         child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: Text(
@@ -164,21 +230,21 @@ class _SessionPageState extends State<SessionPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    OutlinedButton(
-                        onPressed: () {
-                          contentController.text = "";
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            "Clear",
-                            style: TextStyle(
-                                fontSize: 17, color: Colors.deepOrange),
-                          ),
-                        )),
-                    SizedBox(
-                      width: 10,
-                    ),
+                    // OutlinedButton(
+                    //     onPressed: () {
+                    //       contentController.text = "";
+                    //     },
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.all(10),
+                    //       child: Text(
+                    //         "Clear",
+                    //         style: TextStyle(
+                    //             fontSize: 17, color: Colors.deepOrange),
+                    //       ),
+                    //     )),
+                    // SizedBox(
+                    //   width: 10,
+                    // ),
                     OutlinedButton(
                         onPressed: () {
                           _loadSession();
