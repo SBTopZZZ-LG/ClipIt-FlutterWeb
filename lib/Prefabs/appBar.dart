@@ -3,7 +3,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 PreferredSizeWidget getDefaultAppBar() {
   return AppBar(
+    centerTitle: true,
     title: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           "ClipIt",
@@ -22,7 +24,7 @@ PreferredSizeWidget getDefaultAppBar() {
         SizedBox(
           width: 20,
         ),
-        TextButton(
+        OutlinedButton(
             onPressed: () {
               _launchUrl();
             },
@@ -30,20 +32,16 @@ PreferredSizeWidget getDefaultAppBar() {
               "View Source Code",
               style: TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                  //fontWeight: FontWeight.bold,
                   color: Colors.white),
             ))
       ],
     ),
-    leading: null,
+    leading: Container(),
   );
 }
 
 void _launchUrl() async {
   const url = "https://github.com/SBTopZZZ-LG/ClipIt-FlutterWeb";
-  if (await canLaunch(url))
-    await launch(url);
-  else
-    // can't launch url, there is some error
-    throw "Could not launch $url";
+  if (await canLaunch(url)) await launch(url);
 }

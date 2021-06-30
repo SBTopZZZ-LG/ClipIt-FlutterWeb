@@ -7,8 +7,6 @@ import '../Framework/httpReq.dart';
 import '../Prefabs/appBar.dart';
 
 class SessionPage extends StatefulWidget {
-  static const String route = "/session";
-
   final String sessionName;
 
   SessionPage(this.sessionName);
@@ -53,7 +51,15 @@ class _SessionPageState extends State<SessionPage> {
             context: context,
             barrierDismissible: false,
             builder: (ctx) => AlertDialog(
-                  title: Text("Error"),
+                  title: Row(
+                    children: [
+                      Icon(Icons.error),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text("Error"),
+                    ],
+                  ),
                   content: Text(
                       "There was a problem trying to create the session. Please try again later, or check your session."),
                   actions: [
@@ -80,7 +86,15 @@ class _SessionPageState extends State<SessionPage> {
           context: context,
           barrierDismissible: false,
           builder: (ctx) => AlertDialog(
-                title: Text("Error"),
+                title: Row(
+                  children: [
+                    Icon(Icons.error),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text("Error"),
+                  ],
+                ),
                 content: Text(
                     "There was a problem trying to access the session. Please try again later, or check your session."),
                 actions: [
@@ -151,229 +165,184 @@ class _SessionPageState extends State<SessionPage> {
     });
   }
 
-  Future<bool> _onWillPop() async {
-    return (await showDialog(
-          context: context,
-          builder: (ctx) => new AlertDialog(
-            title: new Text('Are you sure?'),
-            content: new Text('Do you want to exit an App'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(ctx);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: new Text('No'),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  stopRefreshing = true;
-
-                  // Reset static values
-                  resetSession();
-
-                  Navigator.of(ctx).pop(true);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: new Text('Yes'),
-                ),
-              ),
-            ],
-          ),
-        )) ??
-        false;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        appBar: getDefaultAppBar(),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      "Session",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      sessionName,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    OutlinedButton(
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (ctx) => AlertDialog(
-                                    title: Text("Share Link"),
-                                    content: Text(
-                                        "You can invite other people to your session by sending them your session name."),
-                                    actions: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: OutlinedButton(
-                                          onPressed: () {
-                                            Clipboard.setData(ClipboardData(
-                                                text: sessionName));
+    return Scaffold(
+      appBar: getDefaultAppBar(),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    "Session",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    sessionName,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  OutlinedButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                                  title: Text("Share Link"),
+                                  content: Text(
+                                      "You can invite other people to your session by sending them your session name."),
+                                  actions: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: OutlinedButton(
+                                        onPressed: () {
+                                          Clipboard.setData(
+                                              ClipboardData(text: sessionName));
 
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: Text(
-                                                "Copied to Clipboard",
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text(
+                                              "Copied to Clipboard",
+                                            ),
+                                          ));
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.copy),
+                                              SizedBox(width: 5),
+                                              Text(
+                                                "Copy session name",
+                                                style: TextStyle(fontSize: 18),
                                               ),
-                                            ));
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10),
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.copy),
-                                                SizedBox(width: 5),
-                                                Text(
-                                                  "Copy session name",
-                                                  style:
-                                                      TextStyle(fontSize: 18),
-                                                ),
-                                              ],
-                                            ),
+                                            ],
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: OutlinedButton(
-                                          onPressed: () {
-                                            Navigator.pop(ctx);
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10),
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  "Okay",
-                                                  textAlign: TextAlign.center,
-                                                  style:
-                                                      TextStyle(fontSize: 18),
-                                                ),
-                                              ],
-                                            ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: OutlinedButton(
+                                        onPressed: () {
+                                          Navigator.pop(ctx);
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "Okay",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(fontSize: 18),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ));
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            "Share link",
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ))
-                  ],
-                ),
-                SizedBox(
-                  height: 35,
-                ),
-                !_isLoading
-                    ? Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 2,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        padding: const EdgeInsets.all(5),
-                        height: 300,
-                        child: TextField(
-                          controller: contentController,
-                          maxLength: 5000,
-                          maxLines: 1000,
+                                    ),
+                                  ],
+                                ));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          "Share link",
                           style: TextStyle(fontSize: 17),
                         ),
-                      )
-                    : Center(
-                        child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: CircularProgressIndicator(),
+                      ))
+                ],
+              ),
+              SizedBox(
+                height: 35,
+              ),
+              !_isLoading
+                  ? Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      padding: const EdgeInsets.all(5),
+                      height: 300,
+                      child: TextField(
+                        controller: contentController,
+                        maxLength: 5000,
+                        maxLines: 1000,
+                        style: TextStyle(fontSize: 17),
+                      ),
+                    )
+                  : Center(
+                      child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: CircularProgressIndicator(),
+                    )),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  OutlinedButton(
+                      onPressed: () {
+                        _loadSession();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          "Reload",
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.bold),
+                        ),
                       )),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    OutlinedButton(
-                        onPressed: () {
-                          _loadSession();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            "Reload",
-                            style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
-                          ),
-                        )),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          currentSession!.content = contentController.text;
+                  SizedBox(
+                    width: 10,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        currentSession!.content = contentController.text;
 
-                          updateSession(currentSession!).then((value) {
-                            if (value != null) {
-                              // Updated
-                              _loadSession();
+                        updateSession(currentSession!).then((value) {
+                          if (value != null) {
+                            // Updated
+                            _loadSession();
 
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: Text(
-                                  "You updated the content",
-                                ),
-                              ));
-                            } else {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: Text(
-                                  "Failed to update content",
-                                ),
-                              ));
-                            }
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            "Submit changes",
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        )),
-                  ],
-                )
-              ],
-            ),
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                "You updated the content",
+                              ),
+                            ));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                "Failed to update content",
+                              ),
+                            ));
+                          }
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          "Submit changes",
+                          style: TextStyle(fontSize: 17),
+                        ),
+                      )),
+                ],
+              )
+            ],
           ),
         ),
       ),

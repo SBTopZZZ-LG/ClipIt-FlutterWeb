@@ -3,13 +3,9 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
 import '../Prefabs/appBar.dart';
-import '../Framework/currentSession.dart';
-import '../Framework/httpReq.dart';
 import '../Pages/session.dart';
 
 class HomePage extends StatefulWidget {
-  static const String route = "/";
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -57,7 +53,8 @@ class _HomePageState extends State<HomePage> {
                 height: 20,
               ),
               ElevatedButton(
-                onPressed: SessionPage.validate(_sessionName) ? _createSession : null,
+                onPressed:
+                    SessionPage.validate(_sessionName) ? _createSession : null,
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Text(
