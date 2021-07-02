@@ -16,7 +16,7 @@ PreferredSizeWidget getDefaultAppBar(BuildContext context) {
           width: 10,
         ),
         Text(
-          "2.0",
+          "2.2",
           style: TextStyle(
               fontSize: 19,
               fontWeight: FontWeight.w300,

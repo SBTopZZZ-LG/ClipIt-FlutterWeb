@@ -35,6 +35,9 @@ class _SessionPageState extends State<SessionPage> {
   bool stopRefreshing = false;
   int currentRefreshCode = -1;
 
+  // ignore: non_constant_identifier_names
+  final int checkForUpdates_Delay = 5;
+
   _SessionPageState(this.sessionName) {
     _createLoadSession();
   }
@@ -158,7 +161,7 @@ class _SessionPageState extends State<SessionPage> {
       } else {
         // Nah, keep going...
 
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(Duration(seconds: checkForUpdates_Delay));
 
         _checkLoadSession(code);
       }
@@ -167,211 +170,245 @@ class _SessionPageState extends State<SessionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: getDefaultAppBar(context),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "Session",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    sessionName,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  OutlinedButton(
-                      style: ButtonStyle(
-                          foregroundColor: MaterialStateColor.resolveWith(
-                              (states) => Theme.of(context).primaryColor)),
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                                  title: Text("Share Link"),
-                                  content: Text(
-                                      "You can invite other people to your session by sending them your session name, or alternatively sending the link."),
-                                  actions: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      child: OutlinedButton(
-                                        style: ButtonStyle(
-                                            foregroundColor:
-                                                MaterialStateColor.resolveWith(
-                                                    (states) =>
-                                                        Theme.of(context)
-                                                            .primaryColor)),
-                                        onPressed: () {
-                                          Clipboard.setData(ClipboardData(
-                                              text:
-                                                  "https://clip-it-web.herokuapp.com/#/$sessionName"));
+    return WillPopScope(
+      onWillPop: () async {
+        currentRefreshCode = -1;
+        return true;
+      },
+      child: Scaffold(
+        appBar: getDefaultAppBar(context),
+        body: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "Session",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      sessionName,
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    OutlinedButton(
+                        style: ButtonStyle(
+                            foregroundColor: MaterialStateColor.resolveWith(
+                                (states) => Theme.of(context).primaryColor)),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                    title: Row(
+                                      children: [
+                                        Icon(Icons.share),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text("Share Link"),
+                                      ],
+                                    ),
+                                    content: Text(
+                                        "You can invite other people to your session by sending them your session name, or alternatively sending the link."),
+                                    actions: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: OutlinedButton(
+                                          style: ButtonStyle(
+                                              foregroundColor:
+                                                  MaterialStateColor
+                                                      .resolveWith((states) =>
+                                                          Theme.of(context)
+                                                              .primaryColor)),
+                                          onPressed: () {
+                                            Clipboard.setData(ClipboardData(
+                                                text:
+                                                    "https://clip-it-web.herokuapp.com/#/$sessionName"));
 
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                            content: Text(
-                                              "Copied to Clipboard",
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: Text(
+                                                "Copied to Clipboard",
+                                              ),
+                                            ));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.copy),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                  "Copy session link",
+                                                  style:
+                                                      TextStyle(fontSize: 18),
+                                                ),
+                                              ],
                                             ),
-                                          ));
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.copy),
-                                              SizedBox(width: 5),
-                                              Text(
-                                                "Copy session name",
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                            ],
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: OutlinedButton(
-                                        style: ButtonStyle(
-                                            foregroundColor:
-                                                MaterialStateColor.resolveWith(
-                                                    (states) =>
-                                                        Theme.of(context)
-                                                            .primaryColor)),
-                                        onPressed: () {
-                                          Navigator.pop(ctx);
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "Okay",
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                            ],
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: OutlinedButton(
+                                          style: ButtonStyle(
+                                              foregroundColor:
+                                                  MaterialStateColor
+                                                      .resolveWith((states) =>
+                                                          Theme.of(context)
+                                                              .primaryColor)),
+                                          onPressed: () {
+                                            Navigator.pop(ctx);
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "Okay",
+                                                  style:
+                                                      TextStyle(fontSize: 18),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          "Share link",
-                          style: TextStyle(fontSize: 17),
-                        ),
-                      ))
-                ],
-              ),
-              SizedBox(
-                height: 35,
-              ),
-              !_isLoading
-                  ? Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 2,
-                            color: Theme.of(context).primaryColor,
+                                    ],
+                                  ));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            "Share link",
+                            style: TextStyle(fontSize: 17),
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      padding: const EdgeInsets.all(5),
-                      height: 300,
-                      child: TextField(
-                        controller: contentController,
-                        maxLength: 5000,
-                        maxLines: 1000,
-                        style: TextStyle(fontSize: 17),
+                        ))
+                  ],
+                ),
+                SizedBox(
+                  height: 35,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 2,
+                        color: Theme.of(context).primaryColor,
                       ),
-                    )
-                  : Center(
-                      child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: CircularProgressIndicator(),
-                    )),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  OutlinedButton(
-                      style: ButtonStyle(
-                          foregroundColor: MaterialStateColor.resolveWith(
-                              (states) => Theme.of(context).primaryColor)),
-                      onPressed: _isLoading
-                          ? null
-                          : () {
-                              _loadSession();
-                            },
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          "Reload",
-                          style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.bold),
-                        ),
-                      )),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateColor.resolveWith(
-                              (states) => Theme.of(context).primaryColor)),
-                      onPressed: _isLoading
-                          ? null
-                          : () {
-                              currentSession!.content = contentController.text;
-
-                              updateSession(currentSession!).then((value) {
-                                if (value != null) {
-                                  // Updated
-                                  _loadSession();
-
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: Text(
-                                      "You updated the content",
-                                    ),
-                                  ));
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: Text(
-                                      "Failed to update content",
-                                    ),
-                                  ));
-                                }
-                              });
-                            },
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          "Submit changes",
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  padding: const EdgeInsets.all(5),
+                  height: 300,
+                  child: !_isLoading
+                      ? TextField(
+                          controller: contentController,
+                          maxLength: 5000,
+                          maxLines: 1000,
                           style: TextStyle(fontSize: 17),
-                        ),
-                      )),
-                ],
-              )
-            ],
+                        )
+                      : Center(
+                          child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: CircularProgressIndicator(),
+                        )),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    OutlinedButton(
+                        style: ButtonStyle(
+                            foregroundColor: MaterialStateColor.resolveWith(
+                                (states) => Theme.of(context).primaryColor)),
+                        onPressed: _isLoading
+                            ? null
+                            : () {
+                                _loadSession();
+                              },
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            children: [
+                              Icon(Icons.replay_outlined),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "Reload",
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        )),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateColor.resolveWith(
+                                (states) => Theme.of(context).primaryColor)),
+                        onPressed: _isLoading
+                            ? null
+                            : () {
+                                currentSession!.content =
+                                    contentController.text;
+
+                                updateSession(currentSession!).then((value) {
+                                  if (value != null) {
+                                    // Updated
+                                    _loadSession();
+
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        "You updated the content",
+                                      ),
+                                    ));
+                                  } else {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        "Failed to update content",
+                                      ),
+                                    ));
+                                  }
+                                });
+                              },
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            children: [
+                              Icon(Icons.save),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "Submit changes",
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                        )),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
+                onSubmitted: (_) => _createSession(),
                 onChanged: (sessionName) =>
                     setState(() => _sessionName = sessionName),
                 decoration: InputDecoration(
