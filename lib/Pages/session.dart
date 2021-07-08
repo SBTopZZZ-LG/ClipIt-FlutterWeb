@@ -410,86 +410,89 @@ class _SessionPageState extends State<SessionPage>
                     ],
                   ),
                 )
-              : Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "There was a problem trying to load the session '",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          Text(
-                            "$sessionName",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                          Text("'.")
-                        ],
-                      ),
-                      SizedBox(height: 15),
-                      Row(
-                        children: [
-                          Icon(Icons.circle),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            "Check your Internet connection",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.circle),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            "Check your Session name/link for any typos",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.circle),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "If your session has timed out, you can re-create it from the ",
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  FluroRouterClass.router.navigateTo(
-                                      context, "/",
-                                      replace: true,
-                                      transition: TransitionType.inFromLeft);
-                                },
-                                child: Text(
-                                  "Home page",
+              : SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "There was a problem trying to load the session '",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              "$sessionName",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                            Text("'.")
+                          ],
+                        ),
+                        SizedBox(height: 15),
+                        Row(
+                          children: [
+                            Icon(Icons.circle),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "Check your Internet connection",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.circle),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "Check your Session name/link for any typos",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.circle),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "If your session has timed out, you can re-create it from the ",
                                   style: TextStyle(fontSize: 18),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
+                                TextButton(
+                                  onPressed: () {
+                                    FluroRouterClass.router.navigateTo(
+                                        context, "/",
+                                        replace: true,
+                                        transition: TransitionType.inFromLeft);
+                                  },
+                                  child: Text(
+                                    "Home page",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
         ),
