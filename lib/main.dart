@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import './fluroRouter.dart';
 
+const String VERSION = "2.3.1";
+
 void main() {
   FluroRouterClass.setupRouter();
 

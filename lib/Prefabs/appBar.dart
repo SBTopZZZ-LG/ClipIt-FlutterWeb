@@ -1,3 +1,4 @@
+import 'package:app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,7 +17,7 @@ PreferredSizeWidget getDefaultAppBar(BuildContext context) {
           width: 10,
         ),
         Text(
-          "2.2",
+          "$VERSION",
           style: TextStyle(
               fontSize: 19,
               fontWeight: FontWeight.w300,
