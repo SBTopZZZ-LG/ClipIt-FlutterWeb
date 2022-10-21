@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:app/Framework/WebSchemas/Session.dart';
 import 'package:http/http.dart' as http;
 
-const String _BASE_URL = //"http://localhost:3000";
-    "https://agile-wave-85046.herokuapp.com";
+const String _BASE_URL = "https://clip-it-web.sbtopzzzlg.repl.co";
 
 Future<bool> createSession(String sessionName) async {
   final response =
